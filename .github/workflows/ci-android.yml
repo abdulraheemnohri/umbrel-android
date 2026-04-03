@@ -8,6 +8,9 @@ on:
     paths:
       - 'packages/android/**'
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   lint-test:
     name: Lint and Unit Tests
@@ -21,6 +24,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: gradle
+          cache-dependency-path: packages/android/umbrel-app/*.gradle*
 
       - name: Grant execute permission for gradlew
         run: chmod +x packages/android/umbrel-app/gradlew
