@@ -12,6 +12,9 @@ on:
         required: true
         default: '1'
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build:
     name: Build Signed Release APK
@@ -25,6 +28,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: gradle
+          cache-dependency-path: packages/android/umbrel-app/*.gradle*
 
       - name: Decode Keystore
         run: |
@@ -50,7 +54,8 @@ jobs:
 
       - name: APK Size Check
         run: |
-          ls -lh packages/android/umbrel-app/app/build/outputs/apk/release/*.apk | awk '{print "APK Size: " }'
+          ls -lh app/build/outputs/apk/release/*.apk | awk '{print "APK Size: " $5}'
+        working-directory: packages/android/umbrel-app
         shell: bash
 
       - name: Create Release
