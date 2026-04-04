@@ -20,9 +20,13 @@ class RuntimeManager(private val context: Context) {
     val state: StateFlow<RuntimeState> = _state
 
     val linuxEnv = LinuxEnvironment(context)
-    private val prootRunner by lazy { ProotRunner(linuxEnv.rootFsDir, linuxEnv.binDir) }
+    val storageManager = StorageManager(context)
+    private val prootRunner by lazy {
+        ProotRunner(linuxEnv.rootFsDir, linuxEnv.binDir, storageManager.buildProotBindMounts())
+    }
     val lifecycleManager by lazy { ServiceLifecycleManager(prootRunner) }
     val supervisor by lazy { BackgroundSupervisor(lifecycleManager) }
+    val sambaManager by lazy { SambaManager(linuxEnv, lifecycleManager) }
 
     suspend fun start() {
         if (_state.value == RuntimeState.RUNNING || _state.value == RuntimeState.INITIALIZING) return
@@ -32,8 +36,12 @@ class RuntimeManager(private val context: Context) {
             Log.d("RuntimeManager", "Starting Umbrel Runtime...")
             linuxEnv.initialize()
 
-            // Start core services (e.g., system-level background processes)
+            // Start core services
             supervisor.startMonitoring()
+
+            // Auto-start Samba if configured (optional future enhancement)
+            // sambaManager.generateConfig(storageManager.ensureSharedDir())
+            // sambaManager.start()
 
             _state.value = RuntimeState.RUNNING
         } catch (e: Exception) {
@@ -47,6 +55,7 @@ class RuntimeManager(private val context: Context) {
 
         Log.d("RuntimeManager", "Stopping Umbrel Runtime...")
         supervisor.stopAll()
+        sambaManager.stop()
         _state.value = RuntimeState.STOPPED
     }
 }
