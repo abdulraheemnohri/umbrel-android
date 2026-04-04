@@ -35,7 +35,7 @@ jobs:
           echo "${{ secrets.RELEASE_KEYSTORE_BASE64 }}" | base64 --decode > packages/android/umbrel-app/app/keystore.jks
 
       - name: Run Lint and Tests
-        run: ./gradlew :app:lintRelease :app:testReleaseUnitTest
+        run: gradle :app:lintRelease :app:testReleaseUnitTest
         working-directory: packages/android/umbrel-app
         env:
           KEYSTORE_PATH: "keystore.jks"
@@ -44,7 +44,7 @@ jobs:
           KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
 
       - name: Build and Sign Release APK
-        run: ./gradlew :app:assembleRelease -Pandroid.injected.version.name=${{ github.event.inputs.versionName }} -Pandroid.injected.version.code=${{ github.event.inputs.versionCode }}
+        run: gradle :app:assembleRelease -Pandroid.injected.version.name=${{ github.event.inputs.versionName }} -Pandroid.injected.version.code=${{ github.event.inputs.versionCode }}
         working-directory: packages/android/umbrel-app
         env:
           KEYSTORE_PATH: "keystore.jks"

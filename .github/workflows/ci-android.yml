@@ -26,13 +26,10 @@ jobs:
           cache: gradle
           cache-dependency-path: packages/android/umbrel-app/*.gradle*
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x packages/android/umbrel-app/gradlew
-
       - name: Run Lint
-        run: ./gradlew :app:lintDebug
+        run: gradle :app:lintDebug
         working-directory: packages/android/umbrel-app
 
       - name: Run Unit Tests
-        run: ./gradlew :app:testDebugUnitTest
+        run: gradle :app:testDebugUnitTest
         working-directory: packages/android/umbrel-app
