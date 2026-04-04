@@ -1,10 +1,11 @@
 {
-  "type": "module",
+  "name": "umbrel-android",
+  "version": "1.0.0",
+  "description": "Umbrel Home Server for Android",
+  "private": true,
   "scripts": {
-    "dev": "./scripts/umbrel-dev",
-    "dev:help": "npm run dev help",
-    "test:vm": "npm --prefix packages/os run build:amd64:rugix && rm -rf packages/os/rugix/build && npm --prefix packages/umbreld run test:vm --",
-    "build:remote": "./scripts/remote-builder build",
-    "test:remote": "./scripts/remote-builder test"
+    "test": "echo \"Running tests in packages/android/umbrel-app...\" && cd packages/android/umbrel-app && gradle test",
+    "build:debug": "cd packages/android/umbrel-app && gradle assembleDebug",
+    "lint": "cd packages/android/umbrel-app && gradle lintDebug"
   }
 }
