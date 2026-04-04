@@ -25,15 +25,20 @@ jobs:
         run: chmod +x packages/android/umbrel-app/gradlew
 
       - name: Run Lint
-        run: ./gradlew :app:lintDebug
+        run: gradle :app:lintDebug
         working-directory: packages/android/umbrel-app
 
       - name: Run Unit Tests
-        run: ./gradlew :app:testDebugUnitTest
+        run: gradle :app:testDebugUnitTest
         working-directory: packages/android/umbrel-app
 
-      - name: Build with Gradle
-        run: ./gradlew :app:assembleDebug
+      - name: Build Debug APK
+        run: gradle :app:assembleDebug
+        working-directory: packages/android/umbrel-app
+
+      - name: List Generated APKs
+        run: |
+          ls -R app/build/outputs/apk/debug/ || echo "No APKs found"
         working-directory: packages/android/umbrel-app
 
       - name: Upload APK
@@ -41,3 +46,4 @@ jobs:
         with:
           name: umbrel-android-debug
           path: packages/android/umbrel-app/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
